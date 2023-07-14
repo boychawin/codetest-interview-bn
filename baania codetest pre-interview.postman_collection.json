@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "26501cde-23c9-4d54-aa60-cbd7cbf2d9e8",
+		"name": "baania codetest pre-interview",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/home?skip=1&take=100",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"home"
+					],
+					"query": [
+						{
+							"key": "skip",
+							"value": "1"
+						},
+						{
+							"key": "take",
+							"value": "100"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":  \"home 1\",\n    \"desc\": \"desc\",\n    \"price\": 999\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/home",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"home"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n            \"id\": 9,\n            \"name\": \"qqq 1\",\n            \"desc\": \"desc\",\n            \"price\": \"999.0\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/home/9",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"home",
+						"9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/home/9",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"home",
+						"9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPostCode",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "/postCode",
+					"path": [
+						"postCode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPostCodeDetail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "/postCode/:postCodeValue",
+					"path": [
+						"postCode",
+						":postCodeValue"
+					],
+					"variable": [
+						{
+							"key": "postCodeValue",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
