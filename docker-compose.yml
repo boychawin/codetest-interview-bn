@@ -1,0 +1,50 @@
+version: "3.9"
+services:
+  # frontend:
+  #   ports:
+  #     - 3000:3000
+  #   restart: always
+  #   container_name: frontend
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   deploy:
+  #     replicas: 1
+  #   networks:
+  #     - postgres-network
+  #   depends_on:
+  #     - backend
+
+  # backend:
+  #   container_name: backend
+  #   ports:
+  #     - 8000:8000
+  #   restart: always
+  #   deploy:
+  #     replicas: 1
+  #   # volumes:
+  #   #   - ./backend/uploads:/app/uploads
+  #   networks:
+  #     - postgres-network
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    env_file:
+      - .env
+    ports:
+      - '5432:5432'
+    volumes:
+      - nodejs-postgres:/data/postgres
+      - ./sql/postgres/create-database.sql:/docker-entrypoint-initdb.d/create-database.sql
+      - ./sql/postgres/backup:/backup  # Mapping backup directory
+    restart: always
+    networks:
+      - postgres-network
+
+
+volumes:
+  nodejs-postgres:
+networks: 
+  postgres-network:
+    driver: bridge
