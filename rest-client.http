@@ -1,0 +1,28 @@
+
+GET http://localhost:8000/home?skip=1&take=100 HTTP/1.1
+content-type: application/json
+####
+POST http://localhost:8000/home
+Content-Type: application/json
+
+{
+    "name": "home 1",
+    "desc": "desc",
+    "price": 999
+}
+####
+PATCH http://localhost:8000/home/9
+Content-Type: application/json
+
+{
+    "id": 9,
+    "name": "qqq 1",
+    "desc": "desc",
+    "price": "999.0"
+}
+####
+DELETE http://localhost:8000/home/9
+####
+GET http://localhost:8000/postCode
+####
+GET http://localhost:8000/postCode/:postCodeValue

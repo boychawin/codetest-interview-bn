@@ -1,0 +1,28 @@
+[
+    {
+        "payload":[
+            {
+                "post_code":"1234"
+            },
+            {
+                "post_code":"12421"
+            },
+            {
+                "post_code":"3241"
+            },
+            {
+                "post_code":"4321"
+            },
+            {
+                "post_code":"astest"
+            }
+        ],
+        "count":5
+    },
+    {
+        "payload":{
+            "average":"1000000.000000000000",
+            "median":"1000000.0"
+        }
+    }
+]

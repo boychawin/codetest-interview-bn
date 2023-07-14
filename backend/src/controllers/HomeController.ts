@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import pool from '../config/db';
-import {Home} from '../models/Home';
+import { Home } from '../models/Home';
 
 
 export class HomeController {
   async getHomes(req: Request, res: Response) {
     const { skip, take } = req.query;
-
+  
     try {
       const client = await pool.connect();
       const result = await client.query(
@@ -14,23 +14,31 @@ export class HomeController {
         [Number(skip) || 0, Number(take) || 10]
       );
       client.release();
-
+  
       const homes = result.rows;
-      res.json(homes);
+      const count = homes.length; // Calculate the count based on the homes array
+  
+      res.json({ payload: homes, count });
     } catch (error) {
       console.error('Error retrieving homes', error);
       res.status(500).send('Server Error');
     }
   }
+  
+  
 
   async createHome(req: Request, res: Response) {
-    const { name, desc, price, post_code }:Home = req.body;
-    const postCodeValue = post_code ?? ""; 
+    const { name, desc, price, post_code }: Home = req.body;
+  
+    if (post_code == null) {
+      return res.status(400).send('Post code is required');
+    }
+
     try {
       const client = await pool.connect();
       const result = await client.query(
         'INSERT INTO homes (name, description, price, post_code) VALUES ($1, $2, $3, $4) RETURNING *',
-        [name, desc, price, postCodeValue]
+        [name, desc, price, post_code]
       );
       client.release();
 
@@ -86,13 +94,41 @@ export class HomeController {
   }
 
   async getPostCode(req: Request, res: Response) {
-    // Logic to handle GET request for '/postCode'
-    res.send('GET: /postCode');
+    try {
+      const client = await pool.connect();
+      const result = await client.query('SELECT DISTINCT post_code FROM homes');
+      client.release();
+  
+      const postCodes = result.rows.map((row: any) => row.post_code);
+      const payload = postCodes.map((post_code: string) => ({ post_code }));
+      const count = postCodes.length;
+  
+      res.json({ payload, count });
+    } catch (error) {
+      console.error('Error retrieving post codes', error);
+      res.status(500).send('Server Error');
+    }
   }
+  
 
   async getPostCodeDetail(req: Request, res: Response) {
     const { postCodeValue } = req.params;
-    // Logic to handle GET request with path parameter 'postCodeValue'
-    res.send(`GET: /postCode/${postCodeValue}`);
+  
+    try {
+      const client = await pool.connect();
+      const result = await client.query(
+        'SELECT AVG(price) AS average, PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY price) AS median FROM homes WHERE post_code = $1',
+        [postCodeValue]
+      );
+      client.release();
+  
+      const { average, median } = result.rows[0];
+  
+      res.json({ payload: { average, median } });
+    } catch (error) {
+      console.error('Error retrieving post code detail', error);
+      res.status(500).send('Server Error');
+    }
   }
+  
 }
