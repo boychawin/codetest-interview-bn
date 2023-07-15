@@ -1,93 +1,106 @@
 <template>
-  <v-form v-model="valid" @submit="submit">
+  <v-form v-model="valid" @submit.prevent="submit">
+    <v-row>
+      <v-col cols="12" md="4">
+        <v-text-field
+          variant="outlined"
+          v-model="urls"
+          :rules="urlRules"
+          :counter="10"
+          label="URL"
+          required
+        ></v-text-field>
+      </v-col>
 
-      <v-row>
-        <v-col cols="12" md="4">
-          <v-text-field
-            v-model="firstname"
-            :rules="nameRules"
-            :counter="10"
-            label="First name"
-            required
-          ></v-text-field>
-        </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          variant="outlined"
+          v-model="ports"
+          :rules="portRules"
+          :counter="10"
+          label="PORT"
+          required
+        ></v-text-field>
+      </v-col>
 
-        <v-col cols="12" md="4">
-          <v-text-field
-            v-model="lastname"
-            :rules="nameRules"
-            :counter="10"
-            label="Last name"
-            required
-          ></v-text-field>
-        </v-col>
-
-        <v-col cols="12" md="4">
-          <v-btn :loading="loading" type="submit" block class="mt-2" text="Submit"></v-btn>
-        </v-col>
-      </v-row>
+      <v-col cols="12" md="4">
+        <v-btn :loading="loading" size="x-large" type="submit" variant="flat" color="indigo" block text="CONNECT"></v-btn>
+      </v-col>
+    </v-row>
 
   </v-form>
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue';
+import { computed, defineComponent,ref } from 'vue';
+import { useStore } from 'vuex';
+import { key } from '../store/store';
 
-  export default defineComponent({
-    data() {
-      return {
-        loading: false,
-        timeout: 0,
-        valid: false,
-        firstname: '',
-        lastname: '',
-        nameRules: [
-          (value: string) => {
-            if (value) return true;
+export default defineComponent({
+  setup() {
+    const store = useStore(key);
 
-            return 'Name is required.';
-          },
-          (value: any) => {
-            if (value?.length <= 10) return true;
+    const portValue = computed(() => store.state.port);
+    const urlValue = computed(() => store.state.url);
 
-            return 'Name must be less than 10 characters.';
-          },
-        ],
-        email: '',
-        emailRules: [
-          (value: string) => {
-            if (value) return true;
-
-            return 'E-mail is required.';
-          },
-          (value: string) => {
-            if (/.+@.+\..+/.test(value)) return true;
-
-            return 'E-mail must be valid.';
-          },
-        ],
-      };
-    },
-    methods: {
-      async submit() {
-        this.loading = true;
-        const results = await this.checkApi(this.firstname);
-        alert(JSON.stringify(results, null, 2));
-        this.loading = false;
+    const loading = ref(false);
+    const timeout = ref(0);
+    const valid = ref(false);
+    const urls = ref(urlValue.value || '');
+    const urlRules = [
+      (value: string) => {
+        if (value) return true;
+        return 'URL is required.';
       },
-      async checkApi(userName: string | null) {
-        return new Promise<string | boolean>((resolve) => {
-          clearTimeout(this.timeout);
-
-          this.timeout = setTimeout(() => {
-            if (!userName) return resolve('Please enter a user name.');
-            if (userName === 'johnleider')
-              return resolve('User name already taken. Please try another one.');
-
-            return resolve(true);
-          }, 1000);
-        });
+    ];
+    const ports = ref(portValue.value);
+    const portRules = [
+      (value: string) => {
+        if (value) return true;
+        return 'Port is required.';
       },
-    },
-  });
+    ];
+
+    const submit = async () => {
+      loading.value = true;
+      const results = await checkApi(urls.value, ports.value);
+      updateUrl(urls.value);
+      updatePort(ports.value);
+      alert(JSON.stringify(results, null, 2));
+      loading.value = false;
+    };
+
+    const checkApi = (urls: string, ports: string) => {
+      return new Promise<string | boolean>((resolve) => {
+        clearTimeout(timeout.value);
+        timeout.value = setTimeout(() => {
+          if (!urls) return resolve('Please enter a URL.');
+          if (!ports) return resolve('Please enter a Port.');
+          return resolve(true);
+        }, 1000);
+      });
+    };
+
+    const updateUrl = (value: string) => {
+      store.commit('updateUrl', value);
+    };
+
+    const updatePort = (value: string) => {
+      store.commit('updatePort', value);
+    };
+
+    return {
+      loading,
+      timeout,
+      valid,
+      urls,
+      urlRules,
+      ports,
+      portRules,
+      urlValue,
+      portValue,
+      submit,
+    };
+  },
+});
 </script>

@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "",
   "scripts": {
+    "dev": "ts-node src/app.ts",
     "start": "ts-node src/app.ts"
   },
   "dependencies": {
