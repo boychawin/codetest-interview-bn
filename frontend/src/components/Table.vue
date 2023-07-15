@@ -27,9 +27,9 @@
               <td>{{ item.name }}</td>
               <td>{{ item.post_code }}</td>
               <td>{{ item.price }}</td>
-              <td>
-                <v-btn variant="flat" color="amber-lighten-5" rounded="xl" class="mr-2 text-amber-lighten-1">VIEW DETAIL</v-btn>
-                <v-btn variant="flat" color="red-lighten-5" class="text-red-lighten-1" rounded="xl">DELETE</v-btn>
+              <td width="250">
+                <DialogViewandEdit title="VIEW DETAIL" :id="item.id" :name="item.name" :post_code="item.post_code" :price="item.price"  :description="item.description"/>
+                <DialogDelete title="DELETE" :id="item.id" :name="item.name"/>
               </td>
             </tr>
           </tbody>
@@ -43,10 +43,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, onMounted } from 'vue';
+import { defineComponent, computed, ref, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import { key } from '../store/store';
-import AddDialog from "./AddDialog.vue";
+import AddDialog from "./DialogAdd.vue";
+import DialogViewandEdit from "./DialogViewandEdit.vue";
+import DialogDelete from "./DialogDelete.vue";
 
 interface Item {
   name: string;
@@ -88,6 +90,8 @@ export default defineComponent({
   },
   components: {
     AddDialog,
+    DialogViewandEdit,
+    DialogDelete
   },
 });
 </script>

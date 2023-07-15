@@ -28,9 +28,10 @@ export const store = createStore<CounterState>({
   state: {
     alert:{
       message:'Create a Successful!',
-      type:'Success',
+      type:'error',
       title: "Success",
-      icon: "mdi-check-circle-outline",
+      label:"CONTINUE",
+      icon: "mdi mdi-check-circle",
     },
     url:import.meta.env.VITE_API_URL,
     port: import.meta.env.VITE_API_PORT,

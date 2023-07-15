@@ -53,7 +53,7 @@
                 ></v-textarea>
               </v-col>
 
-              <v-col cols="12">
+              <v-col cols="12" v-if="error">
                 <v-alert v-if="error" type="error" :title="error"></v-alert>
               </v-col>
 
@@ -93,12 +93,22 @@
 
     <v-dialog v-model="successDialog" max-width="300">
       <v-card class="py-8 text-center">
+        <!-- {{ alertValue }} -->
         <p>
           <v-icon
+            v-if="alertValue.type === 'success'"
             size="x-large"
-            class="mdi mdi-check-circle"
+            :class="alertValue.icon"
             style="font-size: 5rem"
             color="#22bb66"
+          ></v-icon>
+
+          <v-icon
+            v-else-if="alertValue.type === 'error'"
+            size="x-large"
+            :class="alertValue.icon"
+            style="font-size: 5rem"
+            color="red"
           ></v-icon>
         </p>
         <p class="text-h5 font-weight-black">{{ alertValue.title }}</p>
@@ -112,7 +122,7 @@
             variant="outlined"
             text
             @click="successDialog = false"
-            >CONTINUE</v-btn
+            >{{ alertValue.label }}</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -129,7 +139,6 @@ export default defineComponent({
   setup() {
     const dialog = ref(false);
     const successDialog = ref(false);
-    const successMessage = ref("");
     const store = useStore(key);
 
     const portValue = computed(() => store.state.port);
@@ -137,7 +146,6 @@ export default defineComponent({
     const alertValue = computed(() => store.state.alert);
 
     const loading = ref(false);
-    const timeout = ref(0);
     const valid = ref(false);
     const name = ref("");
     const postCode = ref("");
@@ -199,41 +207,41 @@ export default defineComponent({
           dialog.value = false;
 
           // Show success alert
-          const successMessage = "Create success!";
-          showAlert(successMessage, "success");
+    
+          showAlert("Create success!", "success","CONTINUE","Success","mdi mdi-check-circle");
         } else {
-          const errorMessage = await response.text();
-          error.value = errorMessage || "An error occurred.";
-          console.error("Error:", response.status);
+          // const errorMessage = await response.text();
+          // error.value = errorMessage || "An error occurred.";
+          // console.error("Error:", response.status);
+          
+          showAlert("Let's try one more again", "error","TRY AGAIN","Fail","mdi mdi-close-circle");
         }
       } catch (err: any) {
-        error.value = err.message || "An error occurred.";
-        console.error("Error:", err);
+        // error.value = err.message || "An error occurred.";
+        // console.error("Error:", err);
+        showAlert("Let's try one more again", "error","TRY AGAIN","Fail","mdi mdi-close-circle");
       }
 
       loading.value = false;
     };
-
-    const showAlert = (message: string, type: string) => {
+ 
+    const showAlert = (message: string, type: string,label:string,title:string,icon:string) => {
       const alert = {
         message,
         type,
-        title: "Success",
-        icon: "mdi-check-circle-outline",
+        label,
+        title,
+        icon,
+
       };
-
-      // Show the alert using your preferred method (e.g., Vuex store, event bus, etc.)
-      // Example using Vuex store:
       store.commit("showAlert", alert);
-
       // Show success dialog
-      successMessage.value = message;
       successDialog.value = true;
     };
 
     return {
       loading,
-      timeout,
+
       valid,
       name,
       postCode,
@@ -249,7 +257,6 @@ export default defineComponent({
       dialog,
       alertValue,
       successDialog,
-      successMessage,
     };
   },
 });
