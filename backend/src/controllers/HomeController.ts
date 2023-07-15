@@ -29,7 +29,9 @@ export class HomeController {
 
   async createHome(req: Request, res: Response) {
     const { name, desc, price, post_code }: Home = req.body;
-  
+    if (name == null) {
+      return res.status(400).send('Name is required');
+    }
     if (post_code == null) {
       return res.status(400).send('Post code is required');
     }
@@ -52,13 +54,13 @@ export class HomeController {
 
   async updateHome(req: Request, res: Response) {
     const { id } = req.params;
-    const { name, desc, price } = req.body;
+    const { name, desc, price,post_code } = req.body;
 
     try {
       const client = await pool.connect();
       const result = await client.query(
-        'UPDATE homes SET name = $1, description = $2, price = $3 WHERE id = $4 RETURNING *',
-        [name, desc, price, id]
+        'UPDATE homes SET name = $1, description = $2, price = $3, post_code = $4 WHERE id = $5 RETURNING *',
+        [name, desc, price,post_code, id]
       );
       client.release();
 

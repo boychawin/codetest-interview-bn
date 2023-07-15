@@ -1,26 +1,27 @@
 <template>
-<div>
-  <!-- <v-row justify="center"> -->
+  <div>
+    <!-- <v-row justify="center"> -->
     <v-dialog v-model="dialog" persistent width="720">
       <template v-slot:activator="{ props }">
         <v-btn
-        variant="flat" color="red-lighten-5" class="text-red-lighten-1"   rounded="xl" 
+          variant="flat"
+          color="red-lighten-5"
+          class="text-red-lighten-1"
+          rounded="xl"
           v-bind="props"
         >
-      {{ title }}
+          {{ title }}
         </v-btn>
-
       </template>
       <v-card>
         <v-card-title>
-          <span class="text-h6 font-weight-black">    Item Detail - {{ id }}</span>
+          <span class="text-h6 font-weight-black"> Item Detail - {{ id }}</span>
         </v-card-title>
         <v-card-text>
           <v-form v-model="valid" @submit.prevent="submit">
             <v-row>
-        
-              <v-col cols="12" v-if="error" >
-                <v-alert v-if="error"  type="error" :title="error"></v-alert>
+              <v-col cols="12" v-if="error">
+                <v-alert v-if="error" type="error" :title="error"></v-alert>
               </v-col>
 
               <v-container>
@@ -93,29 +94,29 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  <!-- </v-row> -->
-</div>
+    <!-- </v-row> -->
+  </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref,toRefs} from "vue";
+import { computed, defineComponent, ref, toRefs } from "vue";
 import { useStore } from "vuex";
 import { key } from "../store/store";
 
 export default defineComponent({
-  props:{
-    title:{
-      type:String,
-      required:true
+  props: {
+    title: {
+      type: String,
+      required: true,
     },
-    id:{
-      type:String,
-      required:true
+    id: {
+      type: String,
+      required: true,
     },
-    name:{
-      type:String,
-      required:true
-    }
+    name: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const dialog = ref(false);
@@ -126,20 +127,21 @@ export default defineComponent({
     const urlValue = computed(() => store.state.url);
     const alertValue = computed(() => store.state.alert);
 
-    const { id ,name:nameProp}:any = toRefs(props);
+    const { id, name: nameProp }: any = toRefs(props);
 
     const loading = ref(false);
     const valid = ref(false);
     const name = ref(nameProp.value);
     const error = ref("");
-    
+
+    const deleteItem = async (id: string) => {
+      store.commit("deleteData", id);
+    };
 
     const submit = async () => {
       loading.value = true;
       error.value = "";
-      if (
-        !name.value || !id.value 
-      ) {
+      if (!name.value || !id.value) {
         error.value = "Please fill in all the required fields.";
         return;
       }
@@ -164,27 +166,50 @@ export default defineComponent({
 
           // Show success dialog
           dialog.value = false;
-
+          await deleteItem(id.value);
           // Show success alert
-          showAlert("Delete success!", "success","CONTINUE","Success","mdi mdi-check-circle");
+          showAlert(
+            "Delete success!",
+            "success",
+            "CONTINUE",
+            "Success",
+            "mdi mdi-check-circle"
+          );
         } else {
-          showAlert("Let's try one more again", "error","TRY AGAIN","Fail","mdi mdi-close-circle");
+          showAlert(
+            "Let's try one more again",
+            "error",
+            "TRY AGAIN",
+            "Fail",
+            "mdi mdi-close-circle"
+          );
         }
       } catch (err: any) {
-        showAlert("Let's try one more again", "error","TRY AGAIN","Fail","mdi mdi-close-circle");
+        showAlert(
+          "Let's try one more again",
+          "error",
+          "TRY AGAIN",
+          "Fail",
+          "mdi mdi-close-circle"
+        );
       }
 
       loading.value = false;
     };
 
-    const showAlert = (message: string, type: string,label:string,title:string,icon:string) => {
+    const showAlert = (
+      message: string,
+      type: string,
+      label: string,
+      title: string,
+      icon: string
+    ) => {
       const alert = {
         message,
         type,
         label,
         title,
         icon,
-
       };
       store.commit("showAlert", alert);
       // Show success dialog
@@ -202,7 +227,5 @@ export default defineComponent({
       successDialog,
     };
   },
-  
 });
-
 </script>

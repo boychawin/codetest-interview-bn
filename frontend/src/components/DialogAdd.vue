@@ -203,36 +203,67 @@ export default defineComponent({
           const result = await response.json();
           console.log(result); // Handle the response data
 
-          // Show success dialog
-          dialog.value = false;
+          name.value = "";
+          postCode.value = "";
+          Price.value = "";
+          Description.value = "";
 
+          dialog.value = false;
+          await insertData(result);
           // Show success alert
-    
-          showAlert("Create success!", "success","CONTINUE","Success","mdi mdi-check-circle");
+
+          showAlert(
+            "Create success!",
+            "success",
+            "CONTINUE",
+            "Success",
+            "mdi mdi-check-circle"
+          );
         } else {
           // const errorMessage = await response.text();
           // error.value = errorMessage || "An error occurred.";
           // console.error("Error:", response.status);
-          
-          showAlert("Let's try one more again", "error","TRY AGAIN","Fail","mdi mdi-close-circle");
+
+          showAlert(
+            "Let's try one more again",
+            "error",
+            "TRY AGAIN",
+            "Fail",
+            "mdi mdi-close-circle"
+          );
         }
       } catch (err: any) {
         // error.value = err.message || "An error occurred.";
         // console.error("Error:", err);
-        showAlert("Let's try one more again", "error","TRY AGAIN","Fail","mdi mdi-close-circle");
+        showAlert(
+          "Let's try one more again",
+          "error",
+          "TRY AGAIN",
+          "Fail",
+          "mdi mdi-close-circle"
+        );
       }
 
       loading.value = false;
     };
- 
-    const showAlert = (message: string, type: string,label:string,title:string,icon:string) => {
+
+    const insertData = async (itemNew: any) => {
+      store.commit("insertData", itemNew);
+    };
+
+    const showAlert = (
+      message: string,
+      type: string,
+      label: string,
+      title: string,
+      icon: string
+    ) => {
       const alert = {
         message,
         type,
         label,
         title,
         icon,
-
       };
       store.commit("showAlert", alert);
       // Show success dialog

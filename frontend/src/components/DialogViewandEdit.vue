@@ -1,19 +1,21 @@
 <template>
-<div>
+  <div>
     <!-- <v-row justify="center"> -->
-      <v-dialog v-model="dialog" persistent width="720">
+    <v-dialog v-model="dialog" persistent width="720">
       <template v-slot:activator="{ props }">
         <v-btn
-        variant="flat" color="amber-lighten-5" rounded="xl" class="mr-2 text-amber-lighten-1"
+          variant="flat"
+          color="amber-lighten-5"
+          rounded="xl"
+          class="mr-2 text-amber-lighten-1"
           v-bind="props"
         >
-      {{ title }}
+          {{ title }}
         </v-btn>
-
       </template>
       <v-card>
         <v-card-title>
-          <span class="text-h6 font-weight-black">    Item Detail - {{ id }}</span>
+          <span class="text-h6 font-weight-black"> Item Detail - {{ id }}</span>
         </v-card-title>
         <v-card-text>
           <v-form v-model="valid" @submit.prevent="submit">
@@ -52,8 +54,8 @@
                 ></v-textarea>
               </v-col>
 
-              <v-col cols="12" v-if="error" >
-                <v-alert v-if="error"  type="error" :title="error"></v-alert>
+              <v-col cols="12" v-if="error">
+                <v-alert v-if="error" type="error" :title="error"></v-alert>
               </v-col>
 
               <v-container>
@@ -126,41 +128,41 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  <!-- </v-row> -->
-</div>
+    <!-- </v-row> -->
+  </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref,toRefs} from "vue";
+import { computed, defineComponent, ref, toRefs } from "vue";
 import { useStore } from "vuex";
 import { key } from "../store/store";
 
 export default defineComponent({
-  props:{
-    title:{
-      type:String,
-      required:true
+  props: {
+    title: {
+      type: String,
+      required: true,
     },
-    id:{
-      type:String,
-      required:true
+    id: {
+      type: String,
+      required: true,
     },
-    name:{
-      type:String,
-      required:true
+    name: {
+      type: String,
+      required: true,
     },
-    post_code:{
-      type:String,
-      required:true
+    post_code: {
+      type: String,
+      required: true,
     },
-    price:{
-      type:String,
-      required:true
+    price: {
+      type: String,
+      required: true,
     },
-    description:{
-      type:String,
-      required:true
-    }
+    description: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const dialog = ref(false);
@@ -171,7 +173,13 @@ export default defineComponent({
     const urlValue = computed(() => store.state.url);
     const alertValue = computed(() => store.state.alert);
 
-    const { id ,name:nameProp,post_code,price,description}:any = toRefs(props);
+    const {
+      id,
+      name: nameProp,
+      post_code,
+      price,
+      description,
+    }: any = toRefs(props);
 
     const loading = ref(false);
     const valid = ref(false);
@@ -180,7 +188,6 @@ export default defineComponent({
     const Price = ref(price.value);
     const Description = ref(description.value);
     const error = ref("");
-    
 
     const submit = async () => {
       loading.value = true;
@@ -202,6 +209,15 @@ export default defineComponent({
         desc: Description.value,
       };
 
+      const UpdateData = {
+        id: id.value,
+        name: name.value,
+        post_code: Number(postCode.value),
+        price: Number(Price.value),
+        description: Description.value,
+      };
+      
+
       try {
         const response = await fetch(
           `${urlValue.value}:${portValue.value}/home/${id.value}`,
@@ -220,27 +236,62 @@ export default defineComponent({
 
           // Show success dialog
           dialog.value = false;
-
+          await updateItem(UpdateData);
           // Show success alert
-          showAlert("Create success!", "success","CONTINUE","Success","mdi mdi-check-circle");
+          showAlert(
+            "Create success!",
+            "success",
+            "CONTINUE",
+            "Success",
+            "mdi mdi-check-circle"
+          );
         } else {
-          showAlert("Let's try one more again", "error","TRY AGAIN","Fail","mdi mdi-close-circle");
+          showAlert(
+            "Let's try one more again",
+            "error",
+            "TRY AGAIN",
+            "Fail",
+            "mdi mdi-close-circle"
+          );
         }
       } catch (err: any) {
-        showAlert("Let's try one more again", "error","TRY AGAIN","Fail","mdi mdi-close-circle");
+        showAlert(
+          "Let's try one more again",
+          "error",
+          "TRY AGAIN",
+          "Fail",
+          "mdi mdi-close-circle"
+        );
       }
 
       loading.value = false;
     };
 
-    const showAlert = (message: string, type: string,label:string,title:string,icon:string) => {
+    // const updatedValues = computed(() => {
+    //   const values: any = {};
+    //   for (const item of store.state.payload) {
+    //     values[item.id] = { ...item };
+    //   }
+    //   return values;
+    // });
+
+    const updateItem = async (updatedValues: any) => {
+       store.commit("updateDataById", updatedValues);
+    };
+
+    const showAlert = (
+      message: string,
+      type: string,
+      label: string,
+      title: string,
+      icon: string
+    ) => {
       const alert = {
         message,
         type,
         label,
         title,
         icon,
-
       };
       store.commit("showAlert", alert);
       // Show success dialog
@@ -261,7 +312,5 @@ export default defineComponent({
       successDialog,
     };
   },
-  
 });
-
 </script>

@@ -4,7 +4,6 @@ content-type: application/json
 ####
 POST http://localhost:8000/home
 Content-Type: application/json
-
 {
     "name": "home 1",
     "desc": "desc",

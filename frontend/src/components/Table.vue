@@ -2,7 +2,7 @@
   <div>
     <v-sheet class="flex-wrap d-flex">
       <v-sheet class="flex-1-0 ma-2 pa-2">
-        <h1 class="text-red-500">{{ title }}</h1>
+        <h1 class="text-red-500">{{ title }} / {{ count }}</h1>
       </v-sheet>
 
       <v-sheet class="ma-2 pa-2">
@@ -50,15 +50,16 @@ import AddDialog from "./DialogAdd.vue";
 import DialogViewandEdit from "./DialogViewandEdit.vue";
 import DialogDelete from "./DialogDelete.vue";
 
-interface Item {
-  name: string;
-  id: string;
-  description: string;
-  price: string;
-  post_code: string;
-}
+// interface Item {
+//   name: string;
+//   id: string;
+//   description: string;
+//   price: string;
+//   post_code: string;
+// }
 
 export default defineComponent({
+
   props: {
     title: {
       type: String,
@@ -67,31 +68,44 @@ export default defineComponent({
   },
   setup() {
     const store = useStore(key);
-    const items = ref<Item[]>([]);
+    // const items = ref<Item[]>([]);
     const portValue = computed(() => store.state.port);
     const urlValue = computed(() => store.state.url);
-
+    const items = computed(() => store.state.payload);
+    const count = computed(() => store.state.count);
+    
+    console.log(count)
     // Fetch data
     const fetchData = async () => {
       try {
         const response = await fetch(`${urlValue.value}:${portValue.value}/home?skip=0&take=100`);
         const data = await response.json();
-        items.value = data.payload;
+        // items.value = data.payload;
+         fetchDataRedux(data.payload,data.count)
       } catch (error) {
         console.error(error);
       }
     };
 
+    const fetchDataRedux = (payload: any,count:number) => {
+      store.commit("fetchData", payload);
+      store.commit("fetchDataCount", count);
+    };
+    
+    
+
     onMounted(fetchData); // Fetch data on component mount
 
     return {
-      items
+      items,
+      count
     };
   },
+  
   components: {
     AddDialog,
     DialogViewandEdit,
-    DialogDelete
+    DialogDelete,
   },
 });
 </script>
