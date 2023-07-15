@@ -3,19 +3,18 @@ import { InjectionKey } from 'vue';
 
 // Define your state types
 interface CounterState {
-  value: number;
+  alert: any,
   url: string;
   port: string;
 }
 
 // Define your mutations
 const mutations = {
-  increment(state: CounterState) {
-    state.value++;
-  },
-  decrement(state: CounterState) {
-    state.value--;
-  },
+  
+    showAlert(state: CounterState, alert: any) {
+      state.alert = alert;
+    },
+  
   updateUrl(state: CounterState, url: string) {
     state.url = url;
   },
@@ -27,7 +26,12 @@ const mutations = {
 // Create your store
 export const store = createStore<CounterState>({
   state: {
-    value: 0,
+    alert:{
+      message:'Create a Successful!',
+      type:'Success',
+      title: "Success",
+      icon: "mdi-check-circle-outline",
+    },
     url:import.meta.env.VITE_API_URL,
     port: import.meta.env.VITE_API_PORT,
   },

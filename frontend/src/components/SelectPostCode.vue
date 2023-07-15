@@ -61,7 +61,7 @@ export default defineComponent({
         fetchedData.value = [data.payload];
       } catch (error) {
         console.error(error);
-        alert("Failed to fetch data. Please check your network connection.");
+        // alert("Failed to fetch data. Please check your network connection.");
       }
     };
 
@@ -86,9 +86,9 @@ export default defineComponent({
         items.value = data.payload;
       } catch (error) {
         console.error(error);
-        alert(
-          "Failed to fetch initial data. Please check your network connection."
-        );
+        // alert(
+        //   "Failed to fetch initial data. Please check your network connection."
+        // );
       }
     };
 

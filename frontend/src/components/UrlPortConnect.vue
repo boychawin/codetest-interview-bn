@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" md="4">
         <v-text-field
-          variant="outlined"
+          variant="solo"
           v-model="urls"
           :rules="urlRules"
           :counter="10"
@@ -14,7 +14,8 @@
 
       <v-col cols="12" md="4">
         <v-text-field
-          variant="outlined"
+
+          variant="solo"
           v-model="ports"
           :rules="portRules"
           :counter="10"
@@ -24,17 +25,25 @@
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-btn :loading="loading" size="x-large" type="submit" variant="flat" color="indigo" block text="CONNECT"></v-btn>
+        <v-btn
+          variant="flat"
+          type="submit"
+          size="x-large"
+          class="px-5 text-white"
+          :loading="loading"
+          color="indigo"
+          block
+          text="CONNECT"
+        ></v-btn>
       </v-col>
     </v-row>
-
   </v-form>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent,ref } from 'vue';
-import { useStore } from 'vuex';
-import { key } from '../store/store';
+import { computed, defineComponent, ref } from "vue";
+import { useStore } from "vuex";
+import { key } from "../store/store";
 
 export default defineComponent({
   setup() {
@@ -46,18 +55,18 @@ export default defineComponent({
     const loading = ref(false);
     const timeout = ref(0);
     const valid = ref(false);
-    const urls = ref(urlValue.value || '');
+    const urls = ref(urlValue.value || "");
     const urlRules = [
       (value: string) => {
         if (value) return true;
-        return 'URL is required.';
+        return "URL is required.";
       },
     ];
     const ports = ref(portValue.value);
     const portRules = [
       (value: string) => {
         if (value) return true;
-        return 'Port is required.';
+        return "Port is required.";
       },
     ];
 
@@ -66,7 +75,7 @@ export default defineComponent({
       const results = await checkApi(urls.value, ports.value);
       updateUrl(urls.value);
       updatePort(ports.value);
-      alert(JSON.stringify(results, null, 2));
+      alert(results);
       loading.value = false;
     };
 
@@ -74,19 +83,19 @@ export default defineComponent({
       return new Promise<string | boolean>((resolve) => {
         clearTimeout(timeout.value);
         timeout.value = setTimeout(() => {
-          if (!urls) return resolve('Please enter a URL.');
-          if (!ports) return resolve('Please enter a Port.');
-          return resolve(true);
+          if (!urls) return resolve("Please enter a URL.");
+          if (!ports) return resolve("Please enter a Port.");
+          return resolve("Success");
         }, 1000);
       });
     };
 
     const updateUrl = (value: string) => {
-      store.commit('updateUrl', value);
+      store.commit("updateUrl", value);
     };
 
     const updatePort = (value: string) => {
-      store.commit('updatePort', value);
+      store.commit("updatePort", value);
     };
 
     return {
