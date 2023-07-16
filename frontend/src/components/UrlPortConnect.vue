@@ -75,6 +75,8 @@ export default defineComponent({
       const results = await checkApi(urls.value, ports.value);
       updateUrl(urls.value);
       updatePort(ports.value);
+      fetchData();
+      fetchDataPostCode();
       alert(results);
       loading.value = false;
     };
@@ -85,7 +87,9 @@ export default defineComponent({
         timeout.value = setTimeout(() => {
           if (!urls) return resolve("Please enter a URL.");
           if (!ports) return resolve("Please enter a Port.");
-          return resolve("Success");
+
+          
+          resolve("Connect Success");
         }, 1000);
       });
     };
@@ -97,6 +101,48 @@ export default defineComponent({
     const updatePort = (value: string) => {
       store.commit("updatePort", value);
     };
+
+    // Fetch data
+    const fetchData = async () => {
+      try {
+      
+        const response = await fetch(
+          `${store.state.url}:${store.state.port}/home?skip=${1}&take=${10}`
+        );
+        const data = await response.json();
+        fetchDataRedux(data.payload, data.count);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const fetchDataRedux = (payload: any, count: number) => {
+      store.commit("fetchData", payload);
+      store.commit("fetchDataCount", count);
+    };
+
+
+    const fetchDataPostCode = async () => {
+      try {
+        const response = await fetch(
+          `${urlValue.value}:${portValue.value}/postCode`
+        );
+        if (!response.ok) {
+          throw new Error("Fetch request failed");
+        }
+        const data = await response.json();
+        fetchDataPostCodeRedux(data.payload,data.count)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchDataPostCodeRedux = (payload: any, count: number) => {
+      store.commit("fetchDataPostCode", payload);
+      store.commit("fetchDataPostCodeCount", count);
+    };
+
+    
+    
 
     return {
       loading,

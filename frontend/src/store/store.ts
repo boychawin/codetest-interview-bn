@@ -8,14 +8,22 @@ interface CounterState {
   port: string;
   payload: any;
   count: number;
+  payloadPostCode: any;
+  countPostCode: number;
 }
 
 // Define your mutations
 const mutations = {
+  fetchDataPostCode(state: CounterState, payload: any) {
+    state.payloadPostCode = payload;
+  },
+  fetchDataPostCodeCount(state: CounterState, count: number) {
+    state.countPostCode = count;
+  },
   fetchData(state: CounterState, payload: any) {
     state.payload = payload;
   },
-  fetchDataCount(state: CounterState, count: any) {
+  fetchDataCount(state: CounterState, count: number) {
     state.count = count;
   },
 
@@ -62,7 +70,9 @@ export const store = createStore<CounterState>({
     url: import.meta.env.VITE_API_URL,
     port: import.meta.env.VITE_API_PORT,
     payload: [],
-    count: 0
+    count: 0,
+    payloadPostCode: [],
+    countPostCode: 0,
   },
   mutations,
   plugins: [createLogger()],

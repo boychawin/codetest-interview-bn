@@ -8,7 +8,7 @@
               clearable
               label="Select Post Code"
               v-model="selectedPostCode"
-              :items="items.map((item) => item.post_code)"
+              :items="displayedPostCodItems.map((item:any) => item.post_code)"
               variant="solo"
             ></v-combobox>
             <div class="item-list">
@@ -45,7 +45,6 @@ export default defineComponent({
     const portValue = computed(() => store.state.port);
     const urlValue = computed(() => store.state.url);
     const selectedPostCode = ref<string | null>(null);
-    const items = ref<Item[]>([]);
     const fetchedData = ref<Item[]>([]);
 
     // Fetch data
@@ -83,7 +82,7 @@ export default defineComponent({
           throw new Error("Fetch request failed");
         }
         const data = await response.json();
-        items.value = data.payload;
+        fetchDataPostCodeRedux(data.payload,data.count)
       } catch (error) {
         console.error(error);
         // alert(
@@ -92,11 +91,20 @@ export default defineComponent({
       }
     };
 
-    fetchInitialData(); // Fetch initial data on component mount
-    // console.log(`${urlValue}:${portValue}/postCode`)
+    const displayedPostCodItems = computed(() => {
+      return store.state.payloadPostCode;
+    });
+    
+    const fetchDataPostCodeRedux = (payload: any, count: number) => {
+      store.commit("fetchDataPostCode", payload);
+      store.commit("fetchDataPostCodeCount", count);
+    };
+    fetchInitialData();
+
+
     return {
       selectedPostCode,
-      items,
+      displayedPostCodItems,
       fetchedData,
     };
   },
