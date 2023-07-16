@@ -6,7 +6,7 @@ import { Home } from '../models/Home';
 export class HomeController {
   async getHomes(req: Request, res: Response) {
     const { skip, take } = req.query;
-  
+
     try {
       const client = await pool.connect();
       const result = await client.query(
@@ -14,12 +14,9 @@ export class HomeController {
         [Number(skip) || 0, Number(take) || 10]
       );
 
-          // Retrieve the count of all homes
-    // const countResult = await client.query('SELECT COUNT(*) FROM homes');
-
-
+      // Retrieve the count of all homes
+      // const countResult = await client.query('SELECT COUNT(*) FROM homes');
       client.release();
-  
       const homes = result.rows;
       // const count = parseInt(countResult.rows[0].count); // Total count of all homes
       const count = homes.length; // Calculate the count based on the homes array
@@ -30,8 +27,6 @@ export class HomeController {
       res.status(500).send('Server Error');
     }
   }
-  
-  
 
   async createHome(req: Request, res: Response) {
     const { name, desc, price, post_code }: Home = req.body;
@@ -60,13 +55,13 @@ export class HomeController {
 
   async updateHome(req: Request, res: Response) {
     const { id } = req.params;
-    const { name, desc, price,post_code } = req.body;
+    const { name, desc, price, post_code } = req.body;
 
     try {
       const client = await pool.connect();
       const result = await client.query(
         'UPDATE homes SET name = $1, description = $2, price = $3, post_code = $4 WHERE id = $5 RETURNING *',
-        [name, desc, price,post_code, id]
+        [name, desc, price, post_code, id]
       );
       client.release();
 
@@ -106,22 +101,22 @@ export class HomeController {
       const client = await pool.connect();
       const result = await client.query('SELECT DISTINCT post_code FROM homes');
       client.release();
-  
+
       const postCodes = result.rows.map((row: any) => row.post_code);
       const payload = postCodes.map((post_code: string) => ({ post_code }));
       const count = postCodes.length;
-  
+
       res.json({ payload, count });
     } catch (error) {
       console.error('Error retrieving post codes', error);
       res.status(500).send('Server Error');
     }
   }
-  
+
 
   async getPostCodeDetail(req: Request, res: Response) {
     const { postCodeValue } = req.params;
-  
+
     try {
       const client = await pool.connect();
       const result = await client.query(
@@ -129,14 +124,14 @@ export class HomeController {
         [postCodeValue]
       );
       client.release();
-  
+
       const { average, median } = result.rows[0];
-  
+
       res.json({ payload: { average, median } });
     } catch (error) {
       console.error('Error retrieving post code detail', error);
       res.status(500).send('Server Error');
     }
   }
-  
+
 }

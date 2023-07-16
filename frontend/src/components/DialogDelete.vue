@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <v-row justify="center"> -->
     <v-dialog v-model="dialog" persistent width="720">
       <template v-slot:activator="{ props }">
         <v-btn
@@ -60,7 +59,6 @@
 
     <v-dialog v-model="successDialog" max-width="300">
       <v-card class="py-8 text-center">
-        <!-- {{ alertValue }} -->
         <p>
           <v-icon
             v-if="alertValue.type === 'success'"
@@ -87,14 +85,12 @@
             class="px-5"
             color="grey-darken-1"
             variant="outlined"
-            text
             @click="successDialog = false"
             >{{ alertValue.label }}</v-btn
           >
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <!-- </v-row> -->
   </div>
 </template>
 
@@ -119,28 +115,23 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const store = useStore(key);
     const dialog = ref(false);
     const successDialog = ref(false);
-    const store = useStore(key);
-
+    const loading = ref(false);
+    const valid = ref(false);
+    const error = ref("");
     const portValue = computed(() => store.state.port);
     const urlValue = computed(() => store.state.url);
     const alertValue = computed(() => store.state.alert);
 
     const { id, name: nameProp }: any = toRefs(props);
-
-    const loading = ref(false);
-    const valid = ref(false);
     const name = ref(nameProp.value);
-    const error = ref("");
-
-    const deleteItem = async (id: string) => {
-      store.commit("deleteData", id);
-    };
 
     const submit = async () => {
       loading.value = true;
       error.value = "";
+
       if (!name.value || !id.value) {
         error.value = "Please fill in all the required fields.";
         return;
@@ -161,9 +152,6 @@ export default defineComponent({
         );
 
         if (response.ok) {
-          // const result = await response.json();
-          // console.log(result); // Handle the response data
-
           // Show success dialog
           dialog.value = false;
           await deleteItem(id.value);
@@ -195,6 +183,10 @@ export default defineComponent({
       }
 
       loading.value = false;
+    };
+
+    const deleteItem = async (id: string) => {
+      store.commit("deleteData", id);
     };
 
     const showAlert = (

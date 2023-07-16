@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <v-row justify="center"> -->
     <v-dialog v-model="dialog" persistent width="720">
       <template v-slot:activator="{ props }">
         <v-btn
@@ -94,7 +93,6 @@
 
     <v-dialog v-model="successDialog" max-width="300">
       <v-card class="py-8 text-center">
-        <!-- {{ alertValue }} -->
         <p>
           <v-icon
             v-if="alertValue.type === 'success'"
@@ -121,14 +119,12 @@
             class="px-5"
             color="grey-darken-1"
             variant="outlined"
-            text
             @click="successDialog = false"
             >{{ alertValue.label }}</v-btn
           >
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <!-- </v-row> -->
   </div>
 </template>
 
@@ -192,6 +188,7 @@ export default defineComponent({
     const submit = async () => {
       loading.value = true;
       error.value = "";
+
       if (
         !name.value ||
         !postCode.value ||
@@ -216,7 +213,6 @@ export default defineComponent({
         price: Number(Price.value),
         description: Description.value,
       };
-      
 
       try {
         const response = await fetch(
@@ -231,9 +227,6 @@ export default defineComponent({
         );
 
         if (response.ok) {
-          const result = await response.json();
-          console.log(result); // Handle the response data
-
           // Show success dialog
           dialog.value = false;
           await updateItem(UpdateData);
@@ -267,16 +260,8 @@ export default defineComponent({
       loading.value = false;
     };
 
-    // const updatedValues = computed(() => {
-    //   const values: any = {};
-    //   for (const item of store.state.payload) {
-    //     values[item.id] = { ...item };
-    //   }
-    //   return values;
-    // });
-
     const updateItem = async (updatedValues: any) => {
-       store.commit("updateDataById", updatedValues);
+      store.commit("updateDataById", updatedValues);
     };
 
     const showAlert = (

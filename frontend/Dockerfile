@@ -5,16 +5,20 @@ FROM node:16
 WORKDIR /app
 
 # Copy package.json and yarn.lock to the working directory
-COPY package.json yarn.lock ./
+COPY package.json ./
+COPY yarn.lock ./
 
 # Install dependencies
-RUN yarn install --production
+RUN yarn install
 
 # Copy the rest of the application code
 COPY . .
 
+# Build the application
+RUN yarn build
+
 # Expose the desired port (adjust if necessary)
-EXPOSE 8000
+EXPOSE 3000
 
 # Start the application
 CMD ["yarn", "start"]

@@ -60,7 +60,6 @@ export default defineComponent({
         fetchedData.value = [data.payload];
       } catch (error) {
         console.error(error);
-        // alert("Failed to fetch data. Please check your network connection.");
       }
     };
 
@@ -82,25 +81,21 @@ export default defineComponent({
           throw new Error("Fetch request failed");
         }
         const data = await response.json();
-        fetchDataPostCodeRedux(data.payload,data.count)
+        fetchDataPostCodeRedux(data.payload, data.count);
       } catch (error) {
         console.error(error);
-        // alert(
-        //   "Failed to fetch initial data. Please check your network connection."
-        // );
       }
     };
 
     const displayedPostCodItems = computed(() => {
       return store.state.payloadPostCode;
     });
-    
+
     const fetchDataPostCodeRedux = (payload: any, count: number) => {
       store.commit("fetchDataPostCode", payload);
       store.commit("fetchDataPostCodeCount", count);
     };
     fetchInitialData();
-
 
     return {
       selectedPostCode,

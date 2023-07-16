@@ -98,17 +98,6 @@
   </div>
 </template>
 
-<style scoped>
-.table-with-border {
-  border: 0.5px solid #ccc;
-  border-collapse: collapse;
-}
-
-.table-row-r {
-  border-right: 0.5px solid #ccc;
-}
-</style>
-
 <script lang="ts">
 import { defineComponent, computed, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
@@ -187,3 +176,14 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.table-with-border {
+  border: 0.5px solid #ccc;
+  border-collapse: collapse;
+}
+
+.table-row-r {
+  border-right: 0.5px solid #ccc;
+}
+</style>

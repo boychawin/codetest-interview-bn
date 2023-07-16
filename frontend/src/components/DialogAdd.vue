@@ -48,7 +48,7 @@
               <v-col cols="12">
                 <v-textarea
                   label="Description"
-                  v-model="Description"
+                  v-model="description"
                   variant="solo"
                 ></v-textarea>
               </v-col>
@@ -93,7 +93,6 @@
 
     <v-dialog v-model="successDialog" max-width="300">
       <v-card class="py-8 text-center">
-        <!-- {{ alertValue }} -->
         <p>
           <v-icon
             v-if="alertValue.type === 'success'"
@@ -120,7 +119,6 @@
             class="px-5"
             color="grey-darken-1"
             variant="outlined"
-            text
             @click="successDialog = false"
             >{{ alertValue.label }}</v-btn
           >
@@ -150,41 +148,29 @@ export default defineComponent({
     const name = ref("");
     const postCode = ref("");
     const Price = ref("");
-    const Description = ref("");
-    const urlRules = [
-      (value: string) => {
-        if (value) return true;
-        return "URL is required.";
-      },
-    ];
-    const ports = ref(portValue.value);
-    const portRules = [
-      (value: string) => {
-        if (value) return true;
-        return "Port is required.";
-      },
-    ];
+    const description = ref("");
 
     const error = ref("");
 
     const submit = async () => {
       loading.value = true;
       error.value = "";
+
       if (
         !name.value ||
         !postCode.value ||
         !Price.value ||
-        !Description.value
+        !description.value
       ) {
         error.value = "Please fill in all the required fields.";
         return;
       }
 
       const data = {
-        name: name.value,
+        name: String(name.value),
         post_code: Number(postCode.value),
         price: Number(Price.value),
-        desc: Description.value,
+        desc: String(description.value),
       };
 
       try {
@@ -201,17 +187,15 @@ export default defineComponent({
 
         if (response.ok) {
           const result = await response.json();
-          console.log(result); // Handle the response data
-
+          // Set Input == null
           name.value = "";
           postCode.value = "";
           Price.value = "";
-          Description.value = "";
-
+          description.value = "";
+          // Close Dialog And Update Data
           dialog.value = false;
           await insertData(result);
           // Show success alert
-
           showAlert(
             "Create success!",
             "success",
@@ -220,10 +204,6 @@ export default defineComponent({
             "mdi mdi-check-circle"
           );
         } else {
-          // const errorMessage = await response.text();
-          // error.value = errorMessage || "An error occurred.";
-          // console.error("Error:", response.status);
-
           showAlert(
             "Let's try one more again",
             "error",
@@ -233,8 +213,6 @@ export default defineComponent({
           );
         }
       } catch (err: any) {
-        // error.value = err.message || "An error occurred.";
-        // console.error("Error:", err);
         showAlert(
           "Let's try one more again",
           "error",
@@ -272,15 +250,11 @@ export default defineComponent({
 
     return {
       loading,
-
       valid,
       name,
       postCode,
       Price,
-      Description,
-      urlRules,
-      ports,
-      portRules,
+      description,
       urlValue,
       portValue,
       error,

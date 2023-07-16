@@ -53,7 +53,6 @@ export default defineComponent({
     const urlValue = computed(() => store.state.url);
 
     const loading = ref(false);
-    const timeout = ref(0);
     const valid = ref(false);
     const urls = ref(urlValue.value || "");
     const urlRules = [
@@ -83,15 +82,12 @@ export default defineComponent({
 
     const checkApi = (urls: string, ports: string) => {
       return new Promise<string | boolean>((resolve) => {
-        clearTimeout(timeout.value);
-        timeout.value = setTimeout(() => {
-          if (!urls) return resolve("Please enter a URL.");
+        if (!urls) return resolve("Please enter a URL.");
           if (!ports) return resolve("Please enter a Port.");
 
           
-          resolve("Connect Success");
-        }, 1000);
-      });
+        return  resolve("Connect Success");
+      })
     };
 
     const updateUrl = (value: string) => {
@@ -141,12 +137,8 @@ export default defineComponent({
       store.commit("fetchDataPostCodeCount", count);
     };
 
-    
-    
-
     return {
       loading,
-      timeout,
       valid,
       urls,
       urlRules,
