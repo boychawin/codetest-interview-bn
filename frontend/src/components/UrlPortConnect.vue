@@ -103,7 +103,7 @@ export default defineComponent({
       try {
       
         const response = await fetch(
-          `${store.state.url}:${store.state.port}/home?skip=${1}&take=${10}`
+          `${store.state.url}:${store.state.port}/home?skip=${0}&take=${10}`
         );
         const data = await response.json();
         fetchDataRedux(data.payload, data.count);
