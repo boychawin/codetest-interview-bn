@@ -13,11 +13,17 @@ export class HomeController {
         'SELECT * FROM homes ORDER BY id OFFSET $1 LIMIT $2',
         [Number(skip) || 0, Number(take) || 10]
       );
+
+          // Retrieve the count of all homes
+    // const countResult = await client.query('SELECT COUNT(*) FROM homes');
+
+
       client.release();
   
       const homes = result.rows;
+      // const count = parseInt(countResult.rows[0].count); // Total count of all homes
       const count = homes.length; // Calculate the count based on the homes array
-  
+
       res.json({ payload: homes, count });
     } catch (error) {
       console.error('Error retrieving homes', error);

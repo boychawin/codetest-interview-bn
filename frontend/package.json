@@ -12,9 +12,8 @@
   "dependencies": {
     "@mdi/font": "^7.2.96",
     "@reduxjs/toolkit": "^1.9.5",
-    "@types/react-redux": "^7.1.25",
-    "react-redux": "^8.1.1",
     "redux": "^4.2.1",
+    "swrv": "^1.0.4",
     "vue": "^3.2.36",
     "vuetify": "^3.3.8",
     "vuex": "^4.1.0"
